@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react'
 import FilesViewer from './components/FilesViewer'
 import MenuFile from './components/menu';
 import { Routes, Route, Outlet, Link } from "react-router-dom";
+import Fileview from './components/FileView';
 
 const fs = window.require('fs')
 const pathModule = window.require('path')
@@ -36,7 +37,7 @@ function App() {
   //   return <Routes>{result}</Routes>
   // }
 
-  const [path, setPath] = useState(remote.app.getAppPath());
+  const [path, setPath] = useState('D:/Files');
 
   const files = useMemo(
     () =>
@@ -88,8 +89,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="fileview" element={<Fileview />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
@@ -110,7 +110,7 @@ function App() {
               placeholder="File search"
             />
           </div>
-          <MenuFile path={path} files={filteredFiles} onBack={onBack} onOpen={onOpen} />
+          <MenuFile path={path} files={filteredFiles} />
           {/* <FilesViewer path={path} files={filteredFiles} onBack={onBack} onOpen={onOpen} /> */}
         </div>
         <div className="col-8">
@@ -128,22 +128,6 @@ function App() {
     return (
       <div>
         <h2>Home</h2>
-      </div>
-    );
-  }
-
-  function About() {
-    return (
-      <div>
-        <h2>About</h2>
-      </div>
-    );
-  }
-
-  function Dashboard() {
-    return (
-      <div>
-        <h2>Dashboard</h2>
       </div>
     );
   }
