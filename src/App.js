@@ -1,14 +1,10 @@
 import './App.css';
-import { useState, useMemo } from 'react'
-import FilesViewer from './components/FilesViewer'
+import { useState } from 'react'
 import MenuFile from './components/menu';
-import { Routes, Route, Outlet, Link } from "react-router-dom";
 import Fileview from './components/FileView';
 
 const fs = window.require('fs')
 const pathModule = window.require('path')
-
-const remote = window.require('@electron/remote')
 
 const formatSize = size => {
   var i = Math.floor(Math.log(size) / Math.log(1024))
@@ -21,26 +17,11 @@ const formatSize = size => {
 
 function App() {
 
-  // const showContentMenus = (routes) => {
-  //   var result = null;
-  //   if (routes.length > 0) {
-  //     result = routes.map((route, index) => {
-  //       return <Route
-  //         key={index}
-  //         path={route.path}
-  //         exact={route.exact}
-  //         element={route.main}
-  //       />
-  //     })
-
-  //   }
-  //   return <Routes>{result}</Routes>
-  // }
-
   const [path, setPath] = useState('D:/Files');
+  const [url, setUrl] = useState('');
 
-  const files = useMemo(
-    () =>
+  const docFile = path => {
+    const teptin =
       fs
         .readdirSync(path)
         .map(file => {
@@ -56,15 +37,19 @@ function App() {
             return a.name.localeCompare(b.name)
           }
           return a.directory ? -1 : 1
-        }),
-    [path]
-  )
+        })
+    return teptin;
+  }
 
-  const onBack = () => setPath(pathModule.dirname(path))
-  const onOpen = folder => setPath(pathModule.join(path, folder))
-
-  const [searchString, setSearchString] = useState('')
-  const filteredFiles = files.filter(s => s.name.startsWith(searchString))
+  const onPath = path => {
+    setUrl(path.key);
+    // try {
+    //   docFile(path.key);
+    //   console.log(docFile(path.key));
+    // } catch (error) {
+    //   console.log(path.key);
+    // }
+  }
 
   return (
     <div className="container-fluid m-2 w-100 h-100 border border-1">
@@ -72,76 +57,17 @@ function App() {
         <div className="col-12 border-bottom border-1" style={{ height: '38px' }}>
           <span>{path}</span>
         </div>
-
-        {/* <div className="col-8"> */}
-        {/* {this.showContentMenus(routes)} */}
-
-        {/* </div> */}
       </div>
-      {/* <div className="form-group mt-4 mb-2">
-            <input
-              value={searchString}
-              onChange={event => setSearchString(event.target.value)}
-              className="form-control form-control-sm"
-              placeholder="File search"
-            />
-          </div> */}
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="fileview" element={<Fileview />} />
-          <Route path="*" element={<NoMatch />} />
-        </Route>
-      </Routes>
-      {/* <FilesViewer path={path} files={filteredFiles} onBack={onBack} onOpen={onOpen} /> */}
-      {/* <MenuFile /> */}
-      {/* <Menu /> */}
-    </div>
-  );
-  function Layout() {
-    return (
       <div className="row">
         <div className="col-4 border-end border-1">
-          <div className="form-group mt-4 mb-2">
-            <input
-              value={searchString}
-              onChange={event => setSearchString(event.target.value)}
-              className="form-control form-control-sm"
-              placeholder="File search"
-            />
-          </div>
-          <MenuFile path={path} files={filteredFiles} />
-          {/* <FilesViewer path={path} files={filteredFiles} onBack={onBack} onOpen={onOpen} /> */}
+          <MenuFile key={path} path={path} onPath={onPath} docFile={docFile} />
         </div>
-        <div className="col-8">
-          <Outlet />
-
+        <div className="col-8 p-0">
+          <Fileview path={url} docFile={docFile} />
         </div>
-
-
-
       </div>
-    );
-  }
-
-  function Home() {
-    return (
-      <div>
-        <h2>Home</h2>
-      </div>
-    );
-  }
-
-  function NoMatch() {
-    return (
-      <div>
-        <h2>Nothing to see here!</h2>
-        <p>
-          <Link to="/">Go to the home page</Link>
-        </p>
-      </div>
-    );
-  }
+    </div>
+  );
 
 }
 

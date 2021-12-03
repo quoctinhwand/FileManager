@@ -1,106 +1,52 @@
 import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+// import './';
+const pathModule = window.require('path')
 
-const Fileview = () => {
+const Fileview = ({ path, docFile }) => {
+    let files = [];
 
+    try {
+        files = docFile(path);
+        console.log(files);
+    } catch (error) {
+    }
     return (
-        <div>
-            Fileview
+        <div className="container w-100 h-100">
+            <div className="row">
+                <div className="col-12 border-bottom border-1" style={{ height: '38px' }}>
+                    <span>{path}</span>
+                </div>
+            </div>
+            <div className="row">
+                {
+                    files.map(file => {
+                        // return <div className="col-2">
+                        //     {file.name}
+                        // </div>
+                        return <div className="col-2 d-flex justify-content-center flex-column p-3">
+                            <div className="d-flex justify-content-center" style={{ height: '60px' }}>
+                                {console.log(pathModule.join(path, file.name))}
+                                {
+                                    file.directory
+                                        ? <img src="https://e1.pngegg.com/pngimages/525/771/png-clipart-next-folders-icon-blank-blue-folder-icon-thumbnail.png" style={{ height: '50px', width: '50px' }} />
+                                        : <img src={pathModule.join(path, file.name)} style={{ height: '50px', width: '50px' }} />
+                                }
+
+                            </div>
+                            <div className="text-center">
+                                <span className="fs-6" style={{ fontSize: '8px' }}>{file.name}</span>
+                            </div>
+
+                        </div>
+                    })
+                }
+                {/* <div className="col-1">
+                    {console.log(files)}
+                </div> */}
+
+            </div>
         </div>
     );
-    function Layout() {
-        return (
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/courses">Courses</Link>
-                        </li>
-                        <li>
-                            <Link to="/nothing-here">Nothing Here</Link>
-                        </li>
-                    </ul>
-                </nav>
-
-                <hr />
-
-                <Outlet />
-            </div>
-        );
-    }
-
-    function Home() {
-        return (
-            <div>
-                <h2>Home</h2>
-            </div>
-        );
-    }
-
-    function Courses() {
-        return (
-            <div>
-                <h2>Courses</h2>
-                <Outlet />
-            </div>
-        );
-    }
-
-    function CoursesIndex() {
-        return (
-            <div>
-                <p>Please choose a course:</p>
-
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="react-fundamentals">React Fundamentals</Link>
-                        </li>
-                        <li>
-                            <Link to="advanced-react">Advanced React</Link>
-                        </li>
-                        <li>
-                            <Link to="react-router">React Router</Link>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        );
-    }
-
-    function Course() {
-        // let { id } = useParams<"id">();
-
-        return (
-            <div>
-                <h2>
-                    {/* Welcome to the {id!.split("-").map(capitalizeString).join(" ")} course! */}
-                </h2>
-
-                <p>This is a great course. You're gonna love it!</p>
-
-                <Link to="/courses">See all courses</Link>
-            </div>
-        );
-    }
-
-    //   function capitalizeString(s: string): string {
-    //     return s.charAt(0).toUpperCase() + s.slice(1);
-    //   }
-
-    function NoMatch() {
-        return (
-            <div>
-                <h2>It looks like you're lost...</h2>
-                <p>
-                    <Link to="/">Go to the home page</Link>
-                </p>
-            </div>
-        );
-    }
 
 }
 
