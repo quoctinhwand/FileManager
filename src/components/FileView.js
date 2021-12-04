@@ -7,7 +7,7 @@ const Fileview = ({ path, docFile }) => {
 
     try {
         files = docFile(path);
-        console.log(files);
+        // console.log(files);
     } catch (error) {
     }
     return (
@@ -20,12 +20,8 @@ const Fileview = ({ path, docFile }) => {
             <div className="row">
                 {
                     files.map(file => {
-                        // return <div className="col-2">
-                        //     {file.name}
-                        // </div>
                         return <div className="col-2 d-flex justify-content-center flex-column p-3">
                             <div className="d-flex justify-content-center" style={{ height: '60px' }}>
-                                {console.log(pathModule.join(path, file.name))}
                                 {
                                     file.directory
                                         ? <img src="https://e1.pngegg.com/pngimages/525/771/png-clipart-next-folders-icon-blank-blue-folder-icon-thumbnail.png" style={{ height: '50px', width: '50px' }} />
@@ -40,10 +36,6 @@ const Fileview = ({ path, docFile }) => {
                         </div>
                     })
                 }
-                {/* <div className="col-1">
-                    {console.log(files)}
-                </div> */}
-
             </div>
         </div>
     );

@@ -9,55 +9,69 @@ const pathModule = window.require('path')
 
 const MenuFile = ({ path, onPath, docFile }) => {
 
+    let rootSubmenuKeys = [];
+    const [openKeys, setOpenKeys] = React.useState([]);
+
+    const onOpenChange = keys => {
+        const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+        if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+            setOpenKeys(keys);
+        } else {
+            setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+        }
+    };
+
     const files = docFile(path);
     const handleClick = e => {
+        // console.log(e);
         onPath(e);
     };
 
     return (
         <div >
+            <Menu
+                onClick={handleClick}
+                mode="inline"
+                openKeys={openKeys}
+                onOpenChange={onOpenChange}
+            >
+                {files.map(({ name, directory, size }, index) => {
 
-            {files.map(({ name, directory, size }, index) => {
-
-                var fileNQT = undefined;
-                if (directory) {
-                    var pathNext = pathModule.join(path, name);
-                    fileNQT = docFile(pathNext);
-                }
-
-                return (
-                    <div>
-                        <Menu
-                            onClick={handleClick}
-                            mode="inline"
-                        >
-                            {directory
-                                ? fileNQT && fileNQT.filter(f => f.directory === true).length > 0
-                                    ? <SubMenu key={pathModule.join(path, name)} icon={<FolderOpenTwoTone />} title={name} onTitleClick={handleClick}>
-                                        <MenuFile key={pathNext} path={pathNext} onPath={onPath} docFile={docFile} />
-                                    </SubMenu>
-                                    : <Menu.Item key={pathModule.join(path, name)} icon={<FolderTwoTone />}>{name}</Menu.Item>
-                                :
-                                <Menu.Item key={pathModule.join(path, name)} icon={<FileTwoTone />}>{name}</Menu.Item>
-                            }
-                        </Menu>
-                        {/* <Menu
-                            onClick={handleClick}
-                            mode="inline"
-                        >
-                            <SubMenu key="sub2" title="Navigation Two">
-                                <Menu.Item key="5">Option 5</Menu.Item>
-                                <Menu.Item key="6">Option 6</Menu.Item>
-                                <SubMenu key="sub3" title="Submenu">
-                                    <Menu.Item key="7">Option 7</Menu.Item>
-                                    <Menu.Item key="8">Option 8</Menu.Item>
-                                </SubMenu>
+                    var fileNQT = undefined;
+                    if (directory) {
+                        var pathNext = pathModule.join(path, name);
+                        fileNQT = docFile(pathNext);
+                        if (fileNQT && fileNQT.filter(f => f.directory === true).length > 0) {
+                            rootSubmenuKeys.push(pathModule.join(path, name));
+                            return <SubMenu key={pathModule.join(path, name)} icon={<FolderOpenTwoTone />} title={name} onTitleClick={handleClick}>
+                                <MenuFile key={pathNext} path={pathNext} onPath={onPath} docFile={docFile} />
                             </SubMenu>
-                        </Menu> */}
-                    </div>
-                )
-            })}
+                        }
 
+                        else
+                            return <Menu.Item key={pathModule.join(path, name)} icon={<FolderTwoTone />}>{name}</Menu.Item>
+                    }
+                    else
+                        return <Menu.Item key={pathModule.join(path, name)} className="d-flex align-items-center"><img src={pathModule.join(path, name)} style={{ height: '20px', width: '20px' }} /> {name}</Menu.Item>
+
+                    // return (
+                    //     <div>
+
+                    //         {directory
+                    //             ? fileNQT && fileNQT.filter(f => f.directory === true).length > 0
+                    //                 ? <SubMenu key={pathModule.join(path, name)} icon={<FolderOpenTwoTone />} title={name} onTitleClick={handleClick}>
+                    //                     <MenuFile key={pathNext} path={pathNext} onPath={onPath} docFile={docFile} />
+                    //                 </SubMenu>
+                    //                 : <Menu.Item key={pathModule.join(path, name)} icon={<FolderTwoTone />}>{name}</Menu.Item>
+                    //             :
+                    //             <Menu.Item key={pathModule.join(path, name)} className="d-flex align-items-center"><img src={pathModule.join(path, name)} style={{ height: '20px', width: '20px' }} /> {name}</Menu.Item>
+                    //         }
+
+
+                    //     </div>
+                    // )
+                })}
+            </Menu>
         </div>
     );
 };

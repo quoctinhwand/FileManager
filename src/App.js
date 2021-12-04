@@ -17,7 +17,8 @@ const formatSize = size => {
 
 function App() {
 
-  const [path, setPath] = useState('D:/Files');
+  const [path, setPath] = useState(undefined);////192.168.1.105/Retouch 05/thang 11/30.11/Anna
+  const [link, setLink] = useState('');
   const [url, setUrl] = useState('');
 
   const docFile = path => {
@@ -54,13 +55,25 @@ function App() {
   return (
     <div className="container-fluid m-2 w-100 h-100 border border-1">
       <div className="row">
-        <div className="col-12 border-bottom border-1" style={{ height: '38px' }}>
-          <span>{path}</span>
+        <div className="col-12 py-3 border-bottom border-1" >
+          <div className="mb-3">
+            <label className="form-label">URL</label>
+            <input
+              value={link}
+              onChange={event => setLink(event.target.value)}
+              type="text"
+              className="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <button type="submit" className="btn btn-primary" onClick={() => { setPath(link) }}>Submit</button>
         </div>
       </div>
       <div className="row">
         <div className="col-4 border-end border-1">
-          <MenuFile key={path} path={path} onPath={onPath} docFile={docFile} />
+          {path && <MenuFile key={path} path={path} onPath={onPath} docFile={docFile} />}
+          {/* <MenuFile key={path} path={path} onPath={onPath} docFile={docFile} /> */}
         </div>
         <div className="col-8 p-0">
           <Fileview path={url} docFile={docFile} />
